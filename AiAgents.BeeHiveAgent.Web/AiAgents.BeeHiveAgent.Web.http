@@ -1,0 +1,6 @@
+@AiAgents.BeeHiveAgent.Web_HostAddress = http://localhost:5036
+
+GET {{AiAgents.BeeHiveAgent.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiAgents.Core", "AiAgents.Core\AiAgents.Core.csproj", "{56ED1A52-E27E-492D-9900-CAC3D78DA95E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiAgents.BeeHiveAgent.Domain", "AiAgents.BeeHiveAgent.Domain\AiAgents.BeeHiveAgent.Domain.csproj", "{B0D7E7A0-F3EC-462C-9967-963B2984CCD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiAgents.BeeHiveAgent.Application", "AiAgents.BeeHiveAgent.Application\AiAgents.BeeHiveAgent.Application.csproj", "{7CC8AE15-618D-4E69-AA3A-07E48659EE08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiAgents.BeeHiveAgent.Infrastructure", "AiAgents.BeeHiveAgent.Infrastructure\AiAgents.BeeHiveAgent.Infrastructure.csproj", "{42F970B9-A834-4A5E-B4D1-12ACF452FF08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiAgents.BeeHiveAgent.Web", "AiAgents.BeeHiveAgent.Web\AiAgents.BeeHiveAgent.Web.csproj", "{C8283B91-AF28-4F56-BF76-FD50AB3596C5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56ED1A52-E27E-492D-9900-CAC3D78DA95E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56ED1A52-E27E-492D-9900-CAC3D78DA95E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56ED1A52-E27E-492D-9900-CAC3D78DA95E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56ED1A52-E27E-492D-9900-CAC3D78DA95E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0D7E7A0-F3EC-462C-9967-963B2984CCD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0D7E7A0-F3EC-462C-9967-963B2984CCD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0D7E7A0-F3EC-462C-9967-963B2984CCD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0D7E7A0-F3EC-462C-9967-963B2984CCD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CC8AE15-618D-4E69-AA3A-07E48659EE08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CC8AE15-618D-4E69-AA3A-07E48659EE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CC8AE15-618D-4E69-AA3A-07E48659EE08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CC8AE15-618D-4E69-AA3A-07E48659EE08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42F970B9-A834-4A5E-B4D1-12ACF452FF08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42F970B9-A834-4A5E-B4D1-12ACF452FF08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42F970B9-A834-4A5E-B4D1-12ACF452FF08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42F970B9-A834-4A5E-B4D1-12ACF452FF08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8283B91-AF28-4F56-BF76-FD50AB3596C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8283B91-AF28-4F56-BF76-FD50AB3596C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8283B91-AF28-4F56-BF76-FD50AB3596C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8283B91-AF28-4F56-BF76-FD50AB3596C5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

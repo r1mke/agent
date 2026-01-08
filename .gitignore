@@ -1,0 +1,52 @@
+# --- Visual Studio & .NET ---
+.vs/
+bin/
+obj/
+*.user
+*.suo
+# Ignoriraj lokalne postavke s tajnama (Jako bitno za sigurnost!)
+appsettings.Development.json
+appsettings.Local.json
+
+# --- Angular / Node ---
+node_modules/
+dist/
+.angular/
+.env
+.env.local
+
+# --- Python / ML (Dodano) ---
+# Prevedene python datoteke
+__pycache__/
+*.pyc
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+# Virtualna okruženja (kako ne bi slučajno pushao cijeli Python env)
+venv/
+.venv/
+env/
+
+# --- Operativni Sustav (Uvijek dobro imati) ---
+.DS_Store
+Thumbs.db
+
+# --- Tvoj Projekat (Data & ML) ---
+# Slike koje korisnici uploaduju
+UserUploads/
+
+# Datasetovi za treniranje (preveliko za Git)
+Datasets/
+
+# ML Modeli
+# Ignoriramo zipove, ali i same modele ako su 'raw' formati
+MLModels/*.zip
+MLModels/*.h5
+MLModels/*.pth
+MLModels/*.onnx
+MLModels/*.pkl
+# Alternativno: Ako želiš ignorirati SVE u tom folderu osim README fajla:
+# MLModels/*
+# !MLModels/README.md
+
+# Logovi (da ne prljaš repo greškama)
+*.log
