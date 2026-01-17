@@ -20,9 +20,7 @@ public class SamplesController : ControllerBase
         _env = env;
     }
 
-    /// <summary>
-    /// Upload nove slike za analizu.
-    /// </summary>
+
     [HttpPost("upload")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Upload([FromForm] UploadImageDto dto)
@@ -57,9 +55,7 @@ public class SamplesController : ControllerBase
         return Ok(new { Message = "Image queued for analysis", SampleId = sample.Id });
     }
 
-    /// <summary>
-    /// Vraća zadnjih 10 UPLOADOVANIH slika.
-    /// </summary>
+
     [HttpGet("results")]
     public async Task<IActionResult> GetResults()
     {
@@ -81,9 +77,7 @@ public class SamplesController : ControllerBase
         return Ok(results);
     }
 
-    /// <summary>
-    /// Vraća rezultate za specifične ID-eve (za polling nakon uploada).
-    /// </summary>
+
     [HttpPost("results-by-ids")]
     public async Task<IActionResult> GetResultsByIds([FromBody] IdsRequestDto request)
     {
@@ -107,7 +101,7 @@ public class SamplesController : ControllerBase
                     {
                         p.Score,
                         p.PredictedLabel,
-                        Decision = p.Decision.ToString() // Convert enum to string
+                        Decision = p.Decision.ToString()
                     })
                     .ToList()
             })
@@ -116,9 +110,6 @@ public class SamplesController : ControllerBase
         return Ok(results);
     }
 
-    /// <summary>
-    /// Vraća statistiku uploadovanih slika za Dashboard.
-    /// </summary>
     [HttpGet("stats")]
     public async Task<IActionResult> GetUploadStats()
     {
@@ -141,9 +132,7 @@ public class SamplesController : ControllerBase
         });
     }
 
-    /// <summary>
-    /// Vraća slike koje čekaju ljudski review (SAMO PendingReview).
-    /// </summary>
+
     [HttpGet("pending-review")]
     public async Task<IActionResult> GetPendingReview()
     {
@@ -172,9 +161,7 @@ public class SamplesController : ControllerBase
         });
     }
 
-    /// <summary>
-    /// Ljudski review slike - POSTAVLJA LABEL za trening!
-    /// </summary>
+
     [HttpPost("review")]
     public async Task<IActionResult> ReviewSample([FromBody] ReviewRequestDto request)
     {
@@ -203,9 +190,7 @@ public class SamplesController : ControllerBase
         });
     }
 
-    /// <summary>
-    /// Bulk review - pregledaj više slika odjednom.
-    /// </summary>
+
     [HttpPost("review-bulk")]
     public async Task<IActionResult> ReviewBulk([FromBody] List<ReviewRequestDto> requests)
     {
@@ -241,7 +226,7 @@ public class SamplesController : ControllerBase
     }
 }
 
-// DTO za IDs request
+
 public class IdsRequestDto
 {
     public List<string> Ids { get; set; } = new();

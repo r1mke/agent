@@ -2,10 +2,7 @@
 
 namespace AiAgents.BeeHiveAgent.Web.Workers;
 
-/// <summary>
-/// Background worker koji periodično pokreće ScoringAgentRunner.
-/// Ovaj "host" je odgovoran za procesiranje novih slika u redu čekanja.
-/// </summary>
+
 public class ScoringWorker : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
@@ -23,7 +20,7 @@ public class ScoringWorker : BackgroundService
         _logger.LogInformation("🐝 SCORING WORKER: Pokrenut!");
         _logger.LogInformation("═══════════════════════════════════════════════════");
 
-        // Čekaj malo da se aplikacija potpuno pokrene
+
         await Task.Delay(3000, stoppingToken);
 
         while (!stoppingToken.IsCancellationRequested)
@@ -34,37 +31,37 @@ public class ScoringWorker : BackgroundService
                 {
                     var runner = scope.ServiceProvider.GetRequiredService<ScoringAgentRunner>();
 
-                    // Pokreni ciklus agenta (Sense-Think-Act)
+
                     var result = await runner.StepAsync(stoppingToken);
 
                     if (result != null)
                     {
-                        // Slika je procesirana
+
                         _logger.LogInformation($"✅ SCORED: ID={result.SampleId}");
                         _logger.LogInformation($"   -> Score: {result.Score:P1}");
                         _logger.LogInformation($"   -> Decision: {result.Decision}");
                         _logger.LogInformation($"   -> Status: {result.OldStatus} -> {result.NewStatus}");
 
-                        // Kratka pauza između slika
+
                         await Task.Delay(100, stoppingToken);
                     }
                     else
                     {
-                        // Nema slika za procesiranje - čekaj 2 sekunde
+
                         await Task.Delay(2000, stoppingToken);
                     }
                 }
             }
             catch (OperationCanceledException)
             {
-                // Normalno gašenje
+
                 break;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "❌ SCORING WORKER: Greška u petlji!");
 
-                // Nakon greške, čekaj prije ponovnog pokušaja
+
                 await Task.Delay(5000, stoppingToken);
             }
         }

@@ -15,10 +15,7 @@ public class AdminController : ControllerBase
         _db = db;
     }
 
-    /// <summary>
-    /// Ručno pokreće trening ML modela.
-    /// Postavlja NewGoldSinceLastTrain na broj slika u bazi.
-    /// </summary>
+
     [HttpPost("trigger-retrain")]
     public async Task<IActionResult> TriggerRetrain()
     {
@@ -29,7 +26,7 @@ public class AdminController : ControllerBase
             return NotFound("Settings not found in database.");
         }
 
-        // Prebroj sve "gold" slike (Reviewed status)
+
         var goldCount = await _db.ImageSamples
             .CountAsync(s => s.Status == Domain.Enums.SampleStatus.Reviewed);
 
@@ -38,7 +35,7 @@ public class AdminController : ControllerBase
             return BadRequest("No gold samples in database. Upload and review some images first.");
         }
 
-        // Postavi trigger
+
         settings.NewGoldSinceLastTrain = goldCount;
         await _db.SaveChangesAsync(CancellationToken.None);
 
@@ -51,9 +48,7 @@ public class AdminController : ControllerBase
         });
     }
 
-    /// <summary>
-    /// Vraća trenutni status sistema.
-    /// </summary>
+
     [HttpGet("status")]
     public async Task<IActionResult> GetStatus()
     {
@@ -89,22 +84,19 @@ public class AdminController : ControllerBase
         });
     }
 
-    /// <summary>
-    /// Resetuje bazu - briše sve slike i predikcije.
-    /// OPREZNO: Ovo briše sve podatke!
-    /// </summary>
+
     [HttpDelete("reset-database")]
     public async Task<IActionResult> ResetDatabase()
     {
-        // Obriši sve predikcije
+
         var predictions = await _db.Predictions.ToListAsync();
         _db.Predictions.RemoveRange(predictions);
 
-        // Obriši sve slike
+
         var samples = await _db.ImageSamples.ToListAsync();
         _db.ImageSamples.RemoveRange(samples);
 
-        // Resetuj settings
+
         var settings = await _db.Settings.FirstOrDefaultAsync();
         if (settings != null)
         {

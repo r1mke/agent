@@ -1,9 +1,9 @@
 ﻿using AiAgents.BeeHiveAgent.Domain.Enums;
-using AiAgents.Core.Abstractions; // <--- NOVO
+using AiAgents.Core.Abstractions;
 
 namespace AiAgents.BeeHiveAgent.Domain.Entities;
 
-// Dodajemo : IPercept
+
 public class HiveImageSample : IPercept
 {
     public Guid Id { get; set; }

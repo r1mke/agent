@@ -6,13 +6,13 @@ namespace AiAgents.BeeHiveAgent.Infrastructure.Persistence;
 
 public class BeeHiveAgentDbContext : DbContext, IAppDbContext
 {
-    // Konstruktor koji prima opcije (connection string ide ovdje)
+
     public BeeHiveAgentDbContext(DbContextOptions<BeeHiveAgentDbContext> options)
         : base(options)
     {
     }
 
-    // Tabele u bazi
+
     public DbSet<HiveImageSample> ImageSamples { get; set; }
     public DbSet<Prediction> Predictions { get; set; }
     public DbSet<SystemSettings> Settings { get; set; }
@@ -21,15 +21,13 @@ public class BeeHiveAgentDbContext : DbContext, IAppDbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // --- FIX: Eksplicitno definiranje veze i stranog ključa ---
-        // Ovim kažemo EF Core-u da poveže Prediction sa HiveImageSample preko kolone SampleId
+
         modelBuilder.Entity<HiveImageSample>()
             .HasMany(s => s.Predictions)
             .WithOne()
             .HasForeignKey(p => p.SampleId);
 
-        // CONFIG 1: SystemSettings je Singleton (uvijek ID=1)
-        // Ovo osigurava da u bazi uvijek imamo jedan red za postavke
+
         modelBuilder.Entity<SystemSettings>().HasData(
             new SystemSettings
             {
@@ -42,7 +40,7 @@ public class BeeHiveAgentDbContext : DbContext, IAppDbContext
             }
         );
 
-        // CONFIG 2: Podešavanje preciznosti za float (SQL 'real')
+
         modelBuilder.Entity<Prediction>()
             .Property(p => p.Score)
             .HasColumnType("real");

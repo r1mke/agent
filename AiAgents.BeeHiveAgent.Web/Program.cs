@@ -10,11 +10,7 @@ using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ═══════════════════════════════════════════════════════════════════════════
-// 1. REGISTRACIJA SERVISA (Dependency Injection)
-// ═══════════════════════════════════════════════════════════════════════════
 
-// --- BAZA PODATAKA ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? "Server=(localdb)\\mssqllocaldb;Database=BeeHiveVisionDb;Trusted_Connection=True;MultipleActiveResultSets=true";
 
@@ -24,7 +20,7 @@ builder.Services.AddDbContext<BeeHiveAgentDbContext>(options =>
 builder.Services.AddScoped<IAppDbContext>(provider =>
     provider.GetRequiredService<BeeHiveAgentDbContext>());
 
-// --- CORS ---
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
@@ -35,34 +31,31 @@ builder.Services.AddCors(options =>
     });
 });
 
-// --- ML KOMPONENTE ---
+
 builder.Services.AddSingleton<IBeeImageClassifier, MLNetBeeClassifier>();
 builder.Services.AddSingleton<TrainingService>();
 builder.Services.AddSingleton<IModelTrainer>(provider =>
     provider.GetRequiredService<TrainingService>());
 
-// --- APPLICATION LOGIKA ---
+
 builder.Services.AddSingleton<ScoringPolicy>();
 builder.Services.AddScoped<ScoringAgentRunner>();
 builder.Services.AddScoped<RetrainAgentRunner>();
 
-// --- INFRASTRUCTURE ---
+
 builder.Services.AddTransient<DatabaseSeeder>();
 
-// --- BACKGROUND WORKERS ---
+
 builder.Services.AddHostedService<ScoringWorker>();
 builder.Services.AddHostedService<RetrainWorker>();
 
-// --- API ---
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// ═══════════════════════════════════════════════════════════════════════════
-// 2. INICIJALIZACIJA (Kreiranje foldera, seedanje baze)
-// ═══════════════════════════════════════════════════════════════════════════
 
 using (var scope = app.Services.CreateScope())
 {
@@ -82,7 +75,7 @@ using (var scope = app.Services.CreateScope())
     Console.WriteLine("═══════════════════════════════════════════════════");
     Console.WriteLine($"📁 Uploads folder: {uploadsFolder}");
 
-    // --- SEEDANJE PODATAKA ---
+
     var datasetPath = Path.Combine(app.Environment.ContentRootPath, "Datasets");
     if (Directory.Exists(datasetPath))
     {
@@ -110,9 +103,7 @@ using (var scope = app.Services.CreateScope())
     Console.WriteLine("═══════════════════════════════════════════════════");
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// 3. HTTP PIPELINE
-// ═══════════════════════════════════════════════════════════════════════════
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -120,11 +111,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// --- CORS AKTIVACIJA ---
+
 app.UseCors("AllowAngular");
 
-// --- STATIC FILES ---
-// Uploadovane slike: http://localhost:5036/images/naziv.png
+
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
@@ -132,7 +122,7 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/images"
 });
 
-// Dataset slike: http://localhost:5036/dataset/017_038.png
+
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(

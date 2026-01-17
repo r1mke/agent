@@ -6,19 +6,14 @@ using System.Globalization;
 
 namespace AiAgents.BeeHiveAgent.Infrastructure.Persistence;
 
-/// <summary>
-/// Klasa koja mapira kolone iz bee_data.csv
-/// </summary>
+
 public class BeeCsvRecord
 {
     public string file { get; set; } = string.Empty;
     public string pollen_carrying { get; set; } = string.Empty;
 }
 
-/// <summary>
-/// Servis za početno punjenje baze podataka iz CSV dataseta.
-/// Koristi OVERSAMPLING strategiju za balansiranje nebalansiranih klasa.
-/// </summary>
+
 public class DatabaseSeeder
 {
     private readonly BeeHiveAgentDbContext _db;
@@ -30,7 +25,7 @@ public class DatabaseSeeder
 
     public async Task SeedAsync(string datasetPath)
     {
-        // 1. Ako baza već ima podatke, ne radimo ništa
+
         if (await _db.ImageSamples.AnyAsync()) return;
 
         var csvPath = Path.Combine(datasetPath, "bee_data.csv");
@@ -51,7 +46,7 @@ public class DatabaseSeeder
 
         var records = csv.GetRecords<BeeCsvRecord>().ToList();
 
-        // Liste za svaku klasu
+
         var pollenImages = new List<(string path, BeeCsvRecord record)>();
         var noPollenImages = new List<(string path, BeeCsvRecord record)>();
 
@@ -59,7 +54,7 @@ public class DatabaseSeeder
         {
             var fullImgPath = Path.Combine(imagesPath, r.file);
 
-            // Preskoči ako slika ne postoji
+
             if (!File.Exists(fullImgPath)) continue;
 
             var rawValue = r.pollen_carrying?.Trim().ToUpper();
@@ -75,17 +70,12 @@ public class DatabaseSeeder
         Console.WriteLine($"   -> Pollen slike: {pollenImages.Count}");
         Console.WriteLine($"   -> NoPollen slike: {noPollenImages.Count}");
 
-        // ═══════════════════════════════════════════════════════════════
-        // OVERSAMPLING STRATEGIJA
-        // ═══════════════════════════════════════════════════════════════
-        // Problem: Imamo 18 Pollen vs 5000+ NoPollen
-        // Rješenje: Dupliciramo Pollen slike da dobijemo balans
 
-        const int TARGET_PER_CLASS = 500; // Cilj: 500 slika po klasi
+        const int TARGET_PER_CLASS = 500;
 
         var finalTrainingSet = new List<HiveImageSample>();
 
-        // --- POLLEN KLASA (sa oversamplingom) ---
+
         if (pollenImages.Count > 0)
         {
             int oversampleFactor = (int)Math.Ceiling((double)TARGET_PER_CLASS / pollenImages.Count);
@@ -122,15 +112,15 @@ public class DatabaseSeeder
             Console.WriteLine("⚠️ UPOZORENJE: Nema Pollen slika u datasetu!");
         }
 
-        // --- NOPOLLEN KLASA (uzimamo uzorak) ---
+
         if (noPollenImages.Count > 0)
         {
             Console.WriteLine($"");
             Console.WriteLine($"📉 SAMPLING NOPOLLEN KLASE:");
             Console.WriteLine($"   -> Original: {noPollenImages.Count} slika");
 
-            // Nasumično promiješaj i uzmi TARGET_PER_CLASS
-            var random = new Random(42); // Fixed seed za reproducibilnost
+
+            var random = new Random(42);
             var sampledNoPollen = noPollenImages
                 .OrderBy(_ => random.Next())
                 .Take(TARGET_PER_CLASS)
@@ -152,7 +142,7 @@ public class DatabaseSeeder
             Console.WriteLine($"   -> Rezultat: {sampledNoPollen.Count} samplea");
         }
 
-        // --- STATISTIKA FINALNOG DATASETA ---
+
         var finalPollen = finalTrainingSet.Count(s => s.Label == "Pollen");
         var finalNoPollen = finalTrainingSet.Count(s => s.Label == "NoPollen");
 
@@ -165,17 +155,17 @@ public class DatabaseSeeder
         Console.WriteLine($"   -> Balans: {(double)finalPollen / finalTrainingSet.Count:P1} / {(double)finalNoPollen / finalTrainingSet.Count:P1}");
         Console.WriteLine($"═══════════════════════════════════════════════════");
 
-        // Sigurnosna provjera
+
         if (finalPollen == 0 || finalNoPollen == 0)
         {
             Console.WriteLine("🛑 KRITIČNA GREŠKA: Fali jedna klasa! Trening neće uspjeti.");
             return;
         }
 
-        // Ubaci u bazu
+
         await _db.ImageSamples.AddRangeAsync(finalTrainingSet);
 
-        // Postavi trigger za RetrainAgent (samo ako model NE postoji)
+
         var settings = await _db.Settings.FirstOrDefaultAsync();
         if (settings != null)
         {
@@ -183,14 +173,14 @@ public class DatabaseSeeder
 
             if (!File.Exists(modelPath))
             {
-                // Model ne postoji - pokreni trening
+
                 settings.NewGoldSinceLastTrain = finalTrainingSet.Count;
                 Console.WriteLine($"🔔 Model ne postoji - trigger za trening postavljen!");
                 Console.WriteLine($"   -> NewGoldSinceLastTrain = {settings.NewGoldSinceLastTrain}");
             }
             else
             {
-                // Model već postoji - preskoči trening
+
                 settings.NewGoldSinceLastTrain = 0;
                 Console.WriteLine($"✅ Model već postoji ({modelPath})");
                 Console.WriteLine($"   -> Preskačem trening, koristim postojeći model");

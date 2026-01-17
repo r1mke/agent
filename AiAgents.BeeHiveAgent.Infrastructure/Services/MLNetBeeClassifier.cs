@@ -4,10 +4,7 @@ using Microsoft.ML;
 
 namespace AiAgents.BeeHiveAgent.Infrastructure.Services;
 
-/// <summary>
-/// ML.NET implementacija klasifikatora za detekciju polena na slikama pčela.
-/// Automatski učitava model i osvježava ga kada TrainingService završi novi trening.
-/// </summary>
+
 public class MLNetBeeClassifier : IBeeImageClassifier, IDisposable
 {
     private readonly MLContext _mlContext;
@@ -22,10 +19,9 @@ public class MLNetBeeClassifier : IBeeImageClassifier, IDisposable
         _mlContext = new MLContext();
         _modelPath = Path.Combine(Directory.GetCurrentDirectory(), "MLModels", "bee_model.zip");
 
-        // Pretplati se na event kada TrainingService završi trening
         TrainingService.OnModelTrained += ReloadModel;
 
-        // Pokušaj učitati postojeći model
+
         LoadModel();
     }
 
@@ -59,9 +55,7 @@ public class MLNetBeeClassifier : IBeeImageClassifier, IDisposable
         }
     }
 
-    /// <summary>
-    /// Ponovo učitava model nakon što TrainingService završi novi trening.
-    /// </summary>
+
     private void ReloadModel()
     {
         Console.WriteLine("🔄 MLNetBeeClassifier: Primljena obavijest o novom modelu, reload u toku...");
@@ -72,10 +66,10 @@ public class MLNetBeeClassifier : IBeeImageClassifier, IDisposable
     {
         var result = new Dictionary<string, float>();
 
-        // 1. PROVJERA: Da li model postoji?
+
         if (_predictionEngine == null)
         {
-            // Pokušaj ponovo učitati (možda je trening upravo završio)
+
             LoadModel();
 
             if (_predictionEngine == null)
@@ -84,13 +78,13 @@ public class MLNetBeeClassifier : IBeeImageClassifier, IDisposable
                 Console.WriteLine($"   -> Slika: {Path.GetFileName(imagePath)}");
                 Console.WriteLine($"   -> Čekam da se nakupi dovoljno gold podataka za trening...");
 
-                // Vrati "nepoznato" umjesto da pucamo
+
                 result.Add("Unknown", 0.0f);
                 return Task.FromResult(result);
             }
         }
 
-        // 2. PROVJERA: Da li slika postoji?
+
         if (!File.Exists(imagePath))
         {
             Console.WriteLine($"❌ PREDIKCIJA GREŠKA: Slika ne postoji: {imagePath}");
@@ -98,7 +92,7 @@ public class MLNetBeeClassifier : IBeeImageClassifier, IDisposable
             return Task.FromResult(result);
         }
 
-        // 3. PREDIKCIJA
+
         try
         {
             var input = new ModelInput { ImagePath = imagePath };
@@ -109,7 +103,7 @@ public class MLNetBeeClassifier : IBeeImageClassifier, IDisposable
                 prediction = _predictionEngine.Predict(input);
             }
 
-            // 4. PROCESIRANJE REZULTATA
+
             if (prediction.Score != null && prediction.Score.Length > 0)
             {
                 float maxScore = prediction.Score.Max();
@@ -117,7 +111,7 @@ public class MLNetBeeClassifier : IBeeImageClassifier, IDisposable
 
                 result.Add(predictedLabel, maxScore);
 
-                // Debug ispis
+
                 Console.WriteLine($"🧠 PREDIKCIJA: {Path.GetFileName(imagePath)}");
                 Console.WriteLine($"   -> Label: {predictedLabel}");
                 Console.WriteLine($"   -> Confidence: {maxScore:P1}");
